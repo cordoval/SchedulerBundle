@@ -24,7 +24,7 @@ class PointlessCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-                
+        $output->writeln(sprintf("Hi, it's already <info>%s</info> !", date('H:i:s')));
     }    
 
 }
