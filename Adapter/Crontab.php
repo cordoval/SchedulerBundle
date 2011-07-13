@@ -50,7 +50,7 @@ class Crontab implements Adapter
 
             $line = implode(' ', $times);
         } else if ($frequency instanceof On) {
-            
+            $line = $frequency->get();            
         } else {
             throw new \RuntimeException(sprintf('Unsupported annotation "%s" !', get_class($frequency)));
         }
