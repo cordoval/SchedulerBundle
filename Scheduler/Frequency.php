@@ -5,17 +5,22 @@ namespace Palleas\SchedulerBundle\Scheduler;
 /**
 * 
 */
-class Frequency
+abstract class Frequency
 {
     private $value;
 
     public function __construct($value)
     {
-        $this->value = $value;
+        $this->setValue($value);
     }
 
     public function get()
     {
         return $this->value;
+    }
+
+    public function setValue($value)
+    {
+        $this->value = $value;
     }
 }

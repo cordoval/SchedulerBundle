@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Palleas\SchedulerBundle\Scheduler\Every;
 
 /**
-* @Every("5min") 
+* @Every("1min") 
 */
 class PointlessCommand extends Command
 {
