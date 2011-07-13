@@ -9,7 +9,7 @@ class Frequency
 {
     private $value;
 
-    public function __construct($value, $command)
+    public function __construct($value)
     {
         $this->value = $value;
     }
