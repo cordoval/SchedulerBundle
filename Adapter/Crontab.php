@@ -3,6 +3,7 @@
 namespace Palleas\SchedulerBundle\Adapter;
 
 use Palleas\SchedulerBundle\Scheduler\Command;
+use Palleas\SchedulerBundle\Scheduler\Frequency;
 use Palleas\SchedulerBundle\Scheduler\Every;
 use Palleas\SchedulerBundle\Scheduler\On;
 
@@ -31,32 +32,34 @@ class Crontab implements Adapter
             $this->writeCommand($command, $runner, $kernel->getLogDir().DIRECTORY_SEPARATOR.'scheduler.log');
         }
 
-        $this->clearCrontab();
+        $this->clear();
         $this->flush();
     }
 
-    protected function writeCommand(Command $command, $runner, $logFile)
+    public function parse(Frequency $frequency)
     {
-        $line = '';
-
-        $frequency = $command->getFrequency();
         if ($frequency instanceof Every) {
             $times = array();
+
             foreach (Every::getUnits() as $unit) {
+
                 $times[] = $unit === $frequency->getUnit() 
                     ? sprintf('*/%d', $frequency->getCount())
                     : '*';
             }
 
-            $line = implode(' ', $times);
+            return implode(' ', $times);
         } else if ($frequency instanceof On) {
-            $line = $frequency->get();            
-        } else {
-            throw new \RuntimeException(sprintf('Unsupported annotation "%s" !', get_class($frequency)));
-        }
 
+            throw new \LogicException('@On(...) frequencies are not implemented yet.');
+
+        }
+    }
+
+    protected function writeCommand(Command $command, $runner, $logFile)
+    {
         $this->content .= sprintf('%s %s %s >> %s',
-            $line,
+            $this->parse($command->getFrequency()),
             $runner,
             $command->getName(),
             $logFile) . "\n";
@@ -68,9 +71,10 @@ class Crontab implements Adapter
         $crontab->run();        
     }
 
-    protected function clearCrontab()
+    protected function clear()
     {
-        $command = new Process('crontab -r');
+        $clear = new Process('crontab -r');
+        $clear->run();
     }
 
 }
